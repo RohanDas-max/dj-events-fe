@@ -1,11 +1,11 @@
-
+import Layout from "../components/Layout"
 
 
 function Home() {
   return (
-    <div>
-      <h1>hola</h1>
-    </div>
+    <Layout title='Dj Pintu 7992773'>
+     <p>hello</p>
+    </Layout>
   )
 }
 

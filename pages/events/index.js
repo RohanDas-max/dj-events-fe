@@ -1,9 +1,7 @@
-const index = () => {
-    return (
-        <div>
-            events
-        </div>
-    )
-}
+import Layout from "../../components/Layout";
 
-export default index
+const index = () => {
+  return <Layout>My EVENTS</Layout>;
+};
+
+export default index;

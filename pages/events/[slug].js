@@ -1,4 +1,4 @@
-const [slug] = () => {
+const dynamic = () => {
     return (
         <div>
             slug
@@ -6,4 +6,4 @@ const [slug] = () => {
     )
 }
 
-export default [slug]
+export default dynamic
