@@ -1,7 +1,7 @@
 import Layout from "../components/Layout";
 
 
-const About = () => {
+const About = ({}) => {
     return (
         <Layout title='about'>
            About Page 

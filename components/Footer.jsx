@@ -6,7 +6,7 @@ const Footer = () => {
     return (
         <div>
             <footer className={styles.footer}>
-                <p>copyright &copy; Dj Pintu 2021</p>
+                <p>copyright &copy;Dj Pintu 2021</p>
                 <Link href="/about">
                     about this project
                 </Link>
