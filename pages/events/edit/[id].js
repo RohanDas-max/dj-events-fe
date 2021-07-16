@@ -1,25 +1,34 @@
-import { parseCookie } from "../../helpers/index";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { parseCookie } from "../../../helpers/index";
+import Modal from "../../../components/Modal";
+import ImageUpload from "../../../components/ImageUpload";
+import { FaImage } from "react-icons/fa";
+import moment from "moment";
 import Link from "next/link";
-import Layout from "../../components/Layout";
-import { API_URL } from "../../config/index";
-import styles from "../../styles/Form.module.css";
+import Image from "next/image";
+import Layout from "../../../components/Layout";
+import { API_URL } from "../../../config/index";
+import styles from "../../../styles/Form.module.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
-
-export default function Add({ token }) {
+export default function EditPage({ evt, token }) {
   const [values, setValues] = useState({
-    name: "",
-    performers: "",
-    venue: "",
-    address: "",
-    date: "",
-    time: "",
-    description: "",
+    name: evt.name,
+    performers: evt.performers,
+    vanue: evt.vanue,
+    address: evt.address,
+    date: evt.date,
+    time: evt.time,
+    description: evt.description,
   });
+
+  const [imagePreview, setimagePreview] = useState(
+    evt.image ? evt.image.formats.thumbnail.url : null
+  );
+  const [showModal, setShowModal] = useState(false);
+
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -40,18 +49,19 @@ export default function Add({ token }) {
         progress: undefined,
       });
     }
-    const res = await fetch(`${API_URL}/events`, {
-      method: "POST",
+
+    const res = await fetch(`${API_URL}/events/${evt.id}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`
       },
       body: JSON.stringify(values),
     });
 
     if (!res.ok) {
       if (res.status === 403 || res.status === 401) {
-        toast.error("No token included", {
+        toast.error("Unautorized", {
           position: "top-center",
           autoClose: 5000,
           hideProgressBar: false,
@@ -78,8 +88,16 @@ export default function Add({ token }) {
   };
 
   const handleInput = (e) => {
+    e.preventDefault();
     const { name, value } = e.target;
     setValues({ ...values, [name]: value });
+  };
+
+  const imageUploaded = async (e) => {
+    const res = await fetch(`${API_URL}/events/${evt.id}`);
+    const data = await res.json();
+    setimagePreview(data.image.formats.thumbnail.url);
+    setShowModal(false);
   };
 
   return (
@@ -124,12 +142,12 @@ export default function Add({ token }) {
             />
           </div>
           <div>
-            <label htmlFor="vanue">Venue</label>
+            <label htmlFor="venue">Venue</label>
             <input
               type="text"
-              name="venue"
+              name="vanue"
               id="venue"
-              value={values.venue}
+              value={values.vanue}
               onChange={handleInput}
             />
           </div>
@@ -149,7 +167,7 @@ export default function Add({ token }) {
               type="date"
               name="date"
               id="date"
-              value={values.date}
+              value={moment(values.date).format("yyyy-MM-DD")}
               onChange={handleInput}
             />
           </div>
@@ -174,17 +192,38 @@ export default function Add({ token }) {
             onChange={handleInput}
           ></textarea>
         </div>
-        <input type="submit" value="Add Event" className="btn" />
+        <input type="submit" value="Update Event" className="btn" />
       </form>
+      <h2>Event Image</h2>
+      {imagePreview ? (
+        <Image src={imagePreview} height={100} width={170} />
+      ) : (
+        <div>
+          <p>No image uploaded</p>
+        </div>
+      )}
+      <div>
+        <button className="btn-secondary" onClick={() => setShowModal(true)}>
+          <FaImage /> Upload Image
+        </button>
+      </div>
+
+      <Modal show={showModal} onClose={() => setShowModal(false)}>
+        <ImageUpload evtId={evt.id} imageUploaded={imageUploaded} token={token} />
+      </Modal>
     </Layout>
   );
-}
+};
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps({ params: { id }, req }) {
   const { token } = parseCookie(req);
+
+  const res = await fetch(`${API_URL}/events/${id}`);
+  const evt = await res.json();
 
   return {
     props: {
+      evt,
       token,
     },
   };

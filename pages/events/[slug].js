@@ -1,35 +1,28 @@
+import "react-toastify/dist/ReactToastify.css";
 import { API_URL } from "../../config/index";
 import Image from "next/image";
-import { FaPencilAlt, FaTimes } from "react-icons/fa";
 import Link from "next/link";
 import Layout from "../../components/Layout";
+import EventMap from "../../components/EventMap"
 import styles from "../../styles/eventSlug.module.css";
+import { useRouter } from "next/router";
 
-const EventPage = ({ evt }) => {
-  const deleteEvent = (e) => {
-    console.log("delete");
-  };
+export default function EventPage({ evt }){
 
   return (
-    <Layout>
+    <Layout title={evt.name}>
       <div className={styles.event}>
-        <div className={styles.controls}>
-          <Link href={`/events/edit/${evt.id}}`}>
-            <a>
-              <FaPencilAlt />
-            </a>
-          </Link>
-          <a href="#" className={styles.delete} onClick={deleteEvent}>
-            <FaTimes /> Delete Event
-          </a>
-        </div>
         <span>
-          {evt.date} at {evt.time}
+          {new Date(evt.date).toLocaleDateString("en-GB")} at {evt.time}
         </span>
         <h1>{evt.name}</h1>
         {evt.image ? (
           <div className={styles.image}>
-            <Image src={evt.image} width={960} height={600} />
+            <Image
+              src={evt.image.formats.medium.url}
+              width={960}
+              height={600}
+            />
           </div>
         ) : (
           ""
@@ -38,8 +31,9 @@ const EventPage = ({ evt }) => {
         <p>{evt.performers}</p>
         <h3>Descriptions</h3>
         <p>{evt.description}</p>
-        <h3>Vanue: {evt.vanue}</h3>
+        <h3>Venue:{evt.vanue}</h3>
         <p>{evt.address}</p>
+        <EventMap evt={evt} />
         <Link href="/events">
           <a className={styles.back}>{"<"}Go Back</a>
         </Link>
@@ -49,12 +43,10 @@ const EventPage = ({ evt }) => {
 };
 
 export async function getServerSideProps({ query: { slug } }) {
-  const res = await fetch(`${API_URL}/api/events/${slug}`);
+  const res = await fetch(`${API_URL}/events?slug=${slug}`);
   const events = await res.json();
 
   return {
     props: { evt: events[0] },
   };
 }
-
-export default EventPage;

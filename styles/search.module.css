@@ -1,0 +1,18 @@
+.search input{
+    width:250px;
+    height:35px;
+    padding:5px;
+    border: 1px #777 solid;
+    border-radius: 5px;
+}
+.button {
+    margin-left: 5px;
+    height:35px;
+    padding:5px;
+    border: 2px black solid;
+    border-radius: 5px;
+    background-color: rgb(18, 48, 6);
+    color: cornsilk;
+    font-size: medium;
+
+}
