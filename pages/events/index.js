@@ -5,13 +5,13 @@ import Eventitem from "../../components/Eventitem";
 import Pagination from "../../components/Pagination";
 
 
-
 export default function Event({ events, page, total }) {
 
   const lastPage = Math.ceil(total / PER_PAGE)
 
   return (
     <Layout title="Events">
+
       <p>Upcoming DJ Events</p>
       {events.length === 0 && <h3>No events to Show</h3>}
 

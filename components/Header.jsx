@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
+import { BiDownArrow } from "react-icons/bi";
 import Link from "next/link";
 import Search from "./Search";
 import styles from "../styles/header.module.css";
